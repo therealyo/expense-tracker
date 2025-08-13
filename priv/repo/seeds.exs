@@ -1,12 +1,3 @@
-# Script for populating the database. You can run it as:
-#
-#     mix run priv/repo/seeds.exs
-#
-# This script inserts some sample Categories and Expenses.
-# Amounts are in dollars in this file and converted to cents by changesets.
-#
-# Use bang functions so failures are visible during seeding.
-
 alias ExpenseTracker.{Repo}
 alias ExpenseTracker.Categories
 alias ExpenseTracker.Categories.Category
@@ -15,7 +6,6 @@ alias ExpenseTracker.Expenses.Expense
 
 now = DateTime.utc_now() |> DateTime.truncate(:second)
 
-# Helper to create a category with optional expenses
 create_category = fn name, monthly_budget_dollars, desc, expenses ->
   {:ok, category} =
     Categories.create_category(%{
@@ -40,12 +30,9 @@ create_category = fn name, monthly_budget_dollars, desc, expenses ->
   category
 end
 
-# Wipe existing data for idempotency in development
-# Comment out for production if desired
 Repo.delete_all(Expense)
 Repo.delete_all(Category)
 
-# Seed data
 create_category.(
   "Groceries",
   600.00,
