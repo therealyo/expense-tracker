@@ -35,7 +35,7 @@ defmodule ExpenseTracker.Categories do
       ** (Ecto.NoResultsError)
 
   """
-  def get_category!(id), do: Repo.get!(Category, id)
+  def get_category!(id), do: Category |> Repo.get!(id) |> Repo.preload(:expenses)
 
   @doc """
   Creates a category.

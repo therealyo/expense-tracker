@@ -14,9 +14,35 @@ defmodule ExpenseTrackerWeb.CategoryLive.Form do
       </.header>
 
       <.form for={@form} id="category-form" phx-change="validate" phx-submit="save">
-        <.input field={@form[:name]} type="text" label="Name" />
-        <.input field={@form[:description]} type="text" label="Description" />
-        <.input field={@form[:monthly_budget]} type="number" label="Monthly budget" />
+        <.input field={@form[:name]} type="text" label="Name" required />
+        <.input field={@form[:description]} type="text" label="Description" required />
+        <.input field={@form[:monthly_budget]} type="number" label="Monthly budget" required />
+
+        <section>
+          <.inputs_for :let={expense_f} field={@form[:expenses]}>
+            <.input field={expense_f[:description]} type="text" label="Description" required />
+            <.input field={expense_f[:amount]} type="number" label="Amount" step="any" required />
+            <.input field={expense_f[:date]} type="datetime-local" label="Date" required />
+            <.input field={expense_f[:notes]} type="text" label="Notes(Optional)" />
+            <button
+              type="button"
+              name="category[expenses_drop][]"
+              value={expense_f.index}
+              phx-click={JS.dispatch("change")}
+            >
+              <.icon name="hero-x-mark" class="w-6 h-6 relative top-2" />
+            </button>
+          </.inputs_for>
+
+          <button
+            type="button"
+            name="category[expenses_sort][]"
+            value="new"
+            phx-click={JS.dispatch("change")}
+          >
+            Add Expense
+          </button>
+        </section>
         <footer>
           <.button phx-disable-with="Saving..." variant="primary">Save Category</.button>
           <.button navigate={return_path(@return_to, @category)}>Cancel</.button>
