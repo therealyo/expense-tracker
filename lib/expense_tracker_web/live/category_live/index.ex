@@ -10,6 +10,9 @@ defmodule ExpenseTrackerWeb.CategoryLive.Index do
       <.header>
         Listing Categories
         <:actions>
+          <.button type="button" onclick="quick_add_expense_modal.showModal()">
+            Quick Add Expense
+          </.button>
           <.button variant="primary" navigate={~p"/categories/new"}>
             <.icon name="hero-plus" /> New Category
           </.button>
@@ -43,6 +46,20 @@ defmodule ExpenseTrackerWeb.CategoryLive.Index do
           </.link>
         </:action>
       </.table>
+
+      <dialog
+        id="quick_add_expense_modal"
+        class="modal"
+        phx-mounted={JS.ignore_attributes(["open"])}
+      >
+        <div class="modal-box">
+          <h3 class="text-lg font-bold">Add Expense</h3>
+          <.button type="button" phx-click="edit_strategy">Confirm</.button>
+          <.button type="button" onclick="quick_add_expense_modal.close()">
+            Close
+          </.button>
+        </div>
+      </dialog>
     </Layouts.app>
     """
   end

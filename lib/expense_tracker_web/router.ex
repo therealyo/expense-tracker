@@ -22,6 +22,11 @@ defmodule ExpenseTrackerWeb.Router do
     live "/categories/:id", CategoryLive.Show, :show
     live "/categories/:id/edit", CategoryLive.Form, :edit
 
+    live "/expenses", ExpenseLive.Index, :index
+    live "/expenses/new", ExpenseLive.Form, :new
+    live "/expenses/:id", ExpenseLive.Show, :show
+    live "/expenses/:id/edit", ExpenseLive.Form, :edit
+
     get "/", PageController, :home
   end
 

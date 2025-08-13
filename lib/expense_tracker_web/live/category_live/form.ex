@@ -49,6 +49,7 @@ defmodule ExpenseTrackerWeb.CategoryLive.Form do
               <.inputs_for :let={expense_f} field={@form[:expenses]}>
                 <div class="rounded-lg border border-base-200 p-4">
                   <div class="grid gap-4 md:grid-cols-4">
+                    <input type="hidden" name={expense_f[:id].name} value={expense_f[:id].value} />
                     <.input field={expense_f[:description]} type="text" label="Description" required />
                     <.input
                       field={expense_f[:amount]}

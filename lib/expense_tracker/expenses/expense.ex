@@ -1,4 +1,4 @@
-defmodule ExpenseTracker.Categories.Expense do
+defmodule ExpenseTracker.Expenses.Expense do
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -17,7 +17,9 @@ defmodule ExpenseTracker.Categories.Expense do
   @doc false
   def changeset(expense, attrs) do
     expense
-    |> cast(attrs, [:description, :amount, :date, :notes])
+    |> cast(attrs, [:description, :amount, :date, :notes, :category_id])
+    |> validate_number(:amount, greater_than: 0)
     |> validate_required([:description, :amount, :date])
+    |> foreign_key_constraint(:category_id)
   end
 end
