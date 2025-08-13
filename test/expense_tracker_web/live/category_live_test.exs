@@ -5,7 +5,11 @@ defmodule ExpenseTrackerWeb.CategoryLiveTest do
   import ExpenseTracker.CategoriesFixtures
 
   @create_attrs %{name: "some name", description: "some description", monthly_budget: 42}
-  @update_attrs %{name: "some updated name", description: "some updated description", monthly_budget: 43}
+  @update_attrs %{
+    name: "some updated name",
+    description: "some updated description",
+    monthly_budget: 43
+  }
   @invalid_attrs %{name: nil, description: nil, monthly_budget: nil}
   defp create_category(_) do
     category = category_fixture()
