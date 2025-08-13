@@ -7,6 +7,7 @@ defmodule ExpenseTracker.Repo.Migrations.CreateExpenses do
       add :amount, :integer
       add :date, :utc_datetime
       add :notes, :string
+      add :currency, :currency, default: "USD"
 
       add :category_id,
           references("categories", column: :id, on_delete: :delete_all),

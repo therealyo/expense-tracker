@@ -12,9 +12,6 @@ defmodule ExpenseTrackerWeb.CategoryLive.Index do
       <.header>
         Listing Categories
         <:actions>
-          <.button type="button" onclick="quick_add_expense_modal.showModal()">
-            Quick Add Expense
-          </.button>
           <.button variant="primary" navigate={~p"/categories/new"}>
             <.icon name="hero-plus" /> New Category
           </.button>
@@ -28,8 +25,15 @@ defmodule ExpenseTrackerWeb.CategoryLive.Index do
       >
         <:col :let={{_id, category}} label="Name">{category.name}</:col>
         <:col :let={{_id, category}} label="Description">{category.description}</:col>
-        <:col :let={{_id, category}} label="Total Spent">{category.total_spent}</:col>
-        <:col :let={{_id, category}} label="Monthly budget">{category.monthly_budget}</:col>
+        <:col :let={{_id, category}} label="Total Spent">
+          {ExpenseTracker.Currencies.format_cents(category.total_spent, to_string(category.currency))}
+        </:col>
+        <:col :let={{_id, category}} label="Monthly budget">
+          {ExpenseTracker.Currencies.format_cents(
+            category.monthly_budget,
+            to_string(category.currency)
+          )}
+        </:col>
         <:col :let={{_id, category}} label="Progress">
           <.progress spent={category.total_spent} budget={category.monthly_budget} />
         </:col>
@@ -48,20 +52,6 @@ defmodule ExpenseTrackerWeb.CategoryLive.Index do
           </.link>
         </:action>
       </.table>
-
-      <dialog
-        id="quick_add_expense_modal"
-        class="modal"
-        phx-mounted={JS.ignore_attributes(["open"])}
-      >
-        <div class="modal-box">
-          <h3 class="text-lg font-bold">Add Expense</h3>
-          <.button type="button" phx-click="edit_strategy">Confirm</.button>
-          <.button type="button" onclick="quick_add_expense_modal.close()">
-            Close
-          </.button>
-        </div>
-      </dialog>
     </Layouts.app>
     """
   end

@@ -3,11 +3,13 @@ defmodule ExpenseTracker.Categories.Category do
   import Ecto.Changeset
 
   alias ExpenseTracker.Expenses.Expense
+  alias ExpenseTracker.Currencies
 
   schema "categories" do
     field :name, :string
     field :description, :string
     field :monthly_budget, :integer
+    field :currency, Ecto.Enum, values: Currencies.available_currencies(), default: :USD
     field :total_spent, :integer, default: 0, virtual: true
 
     has_many :expenses, Expense,
@@ -19,15 +21,31 @@ defmodule ExpenseTracker.Categories.Category do
 
   @doc false
   def changeset(category, attrs) do
+    attrs = normalize_money(attrs, :monthly_budget)
+
     category
-    |> cast(attrs, [:name, :description, :monthly_budget])
+    |> cast(attrs, [:name, :description, :currency, :monthly_budget])
     |> cast_assoc(
       :expenses,
       sort_param: :expenses_sort,
       drop_param: :expenses_drop
     )
-    |> validate_number(:montly_budget, greater_than: 0)
-    |> validate_required([:name, :description, :monthly_budget])
+    |> validate_inclusion(:currency, Currencies.available_currencies())
+    |> validate_number(:monthly_budget, greater_than_or_equal_to: 0)
+    |> validate_required([:name, :description, :currency, :monthly_budget])
+  end
+
+  defp normalize_money(%{} = attrs, key) do
+    case Map.fetch(attrs, key) do
+      {:ok, v} when is_binary(v) ->
+        case Currencies.parse_dollars_to_cents(v) do
+          {:ok, cents} -> Map.put(attrs, key, cents)
+          {:error, _} -> attrs
+        end
+
+      _ ->
+        attrs
+    end
   end
 
   def with_total_spent(%__MODULE__{} = category) do

@@ -20,8 +20,14 @@ defmodule ExpenseTrackerWeb.ExpenseLive.Form do
             <h3 class="text-base font-semibold mb-4">Expense</h3>
             <div class="grid gap-4 md:grid-cols-2">
               <.input field={@form[:description]} type="text" label="Description" required />
-              <.input field={@form[:amount]} type="number" label="Amount (cents)" step="1" required />
-              <.input field={@form[:date]} type="datetime-local" label="Date" required />
+              <.input field={@form[:amount]} type="text" label="Amount (USD)" required />
+              <.input
+                field={@form[:date]}
+                value={@form[:date].value || now()}
+                type="datetime-local"
+                label="Date"
+                required
+              />
               <.input
                 field={@form[:category_id]}
                 type="select"
@@ -106,4 +112,10 @@ defmodule ExpenseTrackerWeb.ExpenseLive.Form do
         {:noreply, assign(socket, form: to_form(changeset))}
     end
   end
+
+  defp now(),
+    do:
+      NaiveDateTime.local_now()
+      |> NaiveDateTime.to_string()
+      |> String.replace(" ", "T")
 end

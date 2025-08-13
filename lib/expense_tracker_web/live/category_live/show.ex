@@ -1,4 +1,5 @@
 defmodule ExpenseTrackerWeb.CategoryLive.Show do
+  alias ExpenseTracker.Categories.Category
   alias ExpenseTracker.Expenses
   use ExpenseTrackerWeb, :live_view
 
@@ -27,8 +28,18 @@ defmodule ExpenseTrackerWeb.CategoryLive.Show do
           <.list>
             <:item title="Name">{@category.name}</:item>
             <:item title="Description">{@category.description}</:item>
-            <:item title="Monthly budget (cents)">{@category.monthly_budget}</:item>
-            <:item title="Total spent (cents)">{@category.total_spent}</:item>
+            <:item title="Monthly budget">
+              {ExpenseTracker.Currencies.format_cents(
+                @category.monthly_budget,
+                to_string(@category.currency)
+              )}
+            </:item>
+            <:item title="Total spent">
+              {ExpenseTracker.Currencies.format_cents(
+                @category.total_spent,
+                to_string(@category.currency)
+              )}
+            </:item>
             <:item title="Spending %">
               {spending_percent(@category.total_spent, @category.monthly_budget)}%
             </:item>
@@ -83,12 +94,16 @@ defmodule ExpenseTrackerWeb.CategoryLive.Show do
 
   @impl true
   def handle_info({:expense_created, expense}, socket) do
-    {:noreply, stream_insert(socket, :expenses, expense)}
+    %{category: %Category{} = category} = socket.assigns
+    category = Categories.get_category!(category.id)
+    {:noreply, socket |> assign(:category, category) |> stream_insert(:expenses, expense)}
   end
 
   @impl true
   def handle_info({:expense_updated, expense}, socket) do
-    {:noreply, stream_insert(socket, :expenses, expense)}
+    %{category: %Category{} = category} = socket.assigns
+    category = Categories.get_category!(category.id)
+    {:noreply, socket |> assign(:category, category) |> stream_insert(:expenses, expense)}
   end
 
   defp spending_percent(_spent, budget) when budget in [nil, 0], do: 0

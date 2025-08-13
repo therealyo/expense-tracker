@@ -24,7 +24,9 @@ defmodule ExpenseTrackerWeb.ExpenseLive.Show do
       <section class="rounded-lg border border-base-300 p-4">
         <.list>
           <:item title="Description">{@expense.description}</:item>
-          <:item title="Amount (cents)">{@expense.amount}</:item>
+          <:item title="Amount">
+            {ExpenseTracker.Currencies.format_cents(@expense.amount, to_string(@expense.currency))}
+          </:item>
           <:item title="Date">{format_dt(@expense.date)}</:item>
           <:item title="Notes">{@expense.notes}</:item>
 

@@ -21,8 +21,8 @@ defmodule ExpenseTrackerWeb.CategoryLive.Form do
               <.input field={@form[:name]} type="text" label="Name" required />
               <.input
                 field={@form[:monthly_budget]}
-                type="number"
-                label="Monthly Budget (cents)"
+                type="text"
+                label="Monthly Budget (USD)"
                 required
               />
               <div class="md:col-span-2">
@@ -58,7 +58,13 @@ defmodule ExpenseTrackerWeb.CategoryLive.Form do
                       step="1"
                       required
                     />
-                    <.input field={expense_f[:date]} type="datetime-local" label="Date" required />
+                    <.input
+                      field={expense_f[:date]}
+                      value={expense_f[:date].value || now()}
+                      type="datetime-local"
+                      label="Date"
+                      required
+                    />
                     <.input field={expense_f[:notes]} type="text" label="Notes (optional)" />
                   </div>
                   <div class="mt-3 flex justify-end">
@@ -155,4 +161,10 @@ defmodule ExpenseTrackerWeb.CategoryLive.Form do
 
   defp return_path("index", _category), do: ~p"/categories"
   defp return_path("show", category), do: ~p"/categories/#{category}"
+
+  defp now(),
+    do:
+      NaiveDateTime.local_now()
+      |> NaiveDateTime.to_string()
+      |> String.replace(" ", "T")
 end

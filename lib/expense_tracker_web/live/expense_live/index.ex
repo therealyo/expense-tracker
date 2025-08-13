@@ -24,7 +24,9 @@ defmodule ExpenseTrackerWeb.ExpenseLive.Index do
         row_id={fn {id, _} -> id end}
       >
         <:col :let={{_id, expense}} label="Description">{expense.description}</:col>
-        <:col :let={{_id, expense}} label="Amount (cents)">{expense.amount}</:col>
+        <:col :let={{_id, expense}} label="Amount">
+          {ExpenseTracker.Currencies.format_cents(expense.amount, to_string(expense.currency))}
+        </:col>
         <:col :let={{_id, expense}} label="Date">{format_dt(expense.date)}</:col>
         <:col :let={{_id, expense}} label="Category">
           {expense.category && expense.category.name}
