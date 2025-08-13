@@ -8,8 +8,9 @@ defmodule ExpenseTracker.Categories.Category do
     field :name, :string
     field :description, :string
     field :monthly_budget, :integer
+    field :total_spent, :integer, default: 0, virtual: true
 
-    has_many :expenses, Expense
+    has_many :expenses, Expense, on_replace: :delete
     timestamps(type: :utc_datetime)
   end
 
@@ -22,5 +23,12 @@ defmodule ExpenseTracker.Categories.Category do
       drop_param: :expenses_drop
     )
     |> validate_required([:name, :description, :monthly_budget])
+  end
+
+  def with_total_spent(%__MODULE__{} = category) do
+    %{
+      category
+      | total_spent: Enum.sum_by(category.expenses, fn e -> e.amount end)
+    }
   end
 end

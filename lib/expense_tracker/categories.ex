@@ -18,7 +18,10 @@ defmodule ExpenseTracker.Categories do
 
   """
   def list_categories do
-    Repo.all(Category)
+    Category
+    |> Repo.all()
+    |> Repo.preload(:expenses)
+    |> Enum.map(fn c -> Category.with_total_spent(c) end)
   end
 
   @doc """
@@ -35,7 +38,12 @@ defmodule ExpenseTracker.Categories do
       ** (Ecto.NoResultsError)
 
   """
-  def get_category!(id), do: Category |> Repo.get!(id) |> Repo.preload(:expenses)
+  def get_category!(id),
+    do:
+      Category
+      |> Repo.get!(id)
+      |> Repo.preload(:expenses)
+      |> Category.with_total_spent()
 
   @doc """
   Creates a category.
