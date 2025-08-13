@@ -19,7 +19,9 @@
         <div>
           <div class="font-medium">{expense.description}</div>
           <div class="text-sm opacity-80">
-            Amount: {expense.amount} • Date: {format_dt(expense.date)} • Category: {expense.category &&
+            Amount: {ExpenseTracker.Currencies.format_cents(expense.amount, expense.currency)} • Date: {format_dt(
+              expense.date
+            )} • Category: {expense.category &&
               expense.category.name}
           </div>
         </div>
