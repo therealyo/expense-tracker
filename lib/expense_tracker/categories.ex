@@ -6,7 +6,7 @@ defmodule ExpenseTracker.Categories do
   import Ecto.Query, warn: false
   alias ExpenseTracker.Repo
 
-  alias ExpenseTracker.Categories.Category
+  alias ExpenseTracker.Categories.{Category, Expense}
 
   @doc """
   Returns the list of categories.
@@ -109,4 +109,7 @@ defmodule ExpenseTracker.Categories do
   def change_category(%Category{} = category, attrs \\ %{}) do
     Category.changeset(category, attrs)
   end
+
+  def get_expense!(id), do: Repo.get!(Expense, id)
+  def delete_expense(%Expense{} = expense), do: Repo.delete(expense)
 end

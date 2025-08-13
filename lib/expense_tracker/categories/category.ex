@@ -10,7 +10,10 @@ defmodule ExpenseTracker.Categories.Category do
     field :monthly_budget, :integer
     field :total_spent, :integer, default: 0, virtual: true
 
-    has_many :expenses, Expense, on_replace: :delete
+    has_many :expenses, Expense,
+      preload_order: [asc: :date],
+      on_replace: :delete_if_exists
+
     timestamps(type: :utc_datetime)
   end
 

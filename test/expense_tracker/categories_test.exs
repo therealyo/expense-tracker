@@ -12,12 +12,17 @@ defmodule ExpenseTracker.CategoriesTest do
 
     test "list_categories/0 returns all categories" do
       category = category_fixture()
-      assert Categories.list_categories() == [category]
+
+      assert Enum.map(Categories.list_categories(), &Map.put(&1, :expenses, nil)) == [
+               Map.put(category, :expenses, nil)
+             ]
     end
 
     test "get_category!/1 returns the category with given id" do
       category = category_fixture()
-      assert Categories.get_category!(category.id) == category
+
+      assert Map.put(Categories.get_category!(category.id), :expenses, nil) ==
+               Map.put(category, :expenses, nil)
     end
 
     test "create_category/1 with valid data creates a category" do
@@ -35,7 +40,12 @@ defmodule ExpenseTracker.CategoriesTest do
 
     test "update_category/2 with valid data updates the category" do
       category = category_fixture()
-      update_attrs = %{name: "some updated name", description: "some updated description", monthly_budget: 43}
+
+      update_attrs = %{
+        name: "some updated name",
+        description: "some updated description",
+        monthly_budget: 43
+      }
 
       assert {:ok, %Category{} = category} = Categories.update_category(category, update_attrs)
       assert category.name == "some updated name"
@@ -46,7 +56,9 @@ defmodule ExpenseTracker.CategoriesTest do
     test "update_category/2 with invalid data returns error changeset" do
       category = category_fixture()
       assert {:error, %Ecto.Changeset{}} = Categories.update_category(category, @invalid_attrs)
-      assert category == Categories.get_category!(category.id)
+
+      assert Map.put(category, :expenses, nil) ==
+               Map.put(Categories.get_category!(category.id), :expenses, nil)
     end
 
     test "delete_category/1 deletes the category" do

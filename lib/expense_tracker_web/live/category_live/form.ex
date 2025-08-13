@@ -14,39 +14,74 @@ defmodule ExpenseTrackerWeb.CategoryLive.Form do
       </.header>
 
       <.form for={@form} id="category-form" phx-change="validate" phx-submit="save">
-        <.input field={@form[:name]} type="text" label="Name" required />
-        <.input field={@form[:description]} type="text" label="Description" required />
-        <.input field={@form[:monthly_budget]} type="number" label="Monthly budget" required />
+        <div class="space-y-6">
+          <section class="rounded-lg border border-base-300 p-4">
+            <h3 class="text-base font-semibold mb-4">Category</h3>
+            <div class="grid gap-4 md:grid-cols-2">
+              <.input field={@form[:name]} type="text" label="Name" required />
+              <.input
+                field={@form[:monthly_budget]}
+                type="number"
+                label="Monthly Budget (cents)"
+                required
+              />
+              <div class="md:col-span-2">
+                <.input field={@form[:description]} type="text" label="Description" required />
+              </div>
+            </div>
+          </section>
 
-        <section>
-          <.inputs_for :let={expense_f} field={@form[:expenses]}>
-            <.input field={expense_f[:description]} type="text" label="Description" required />
-            <.input field={expense_f[:amount]} type="number" label="Amount" step="any" required />
-            <.input field={expense_f[:date]} type="datetime-local" label="Date" required />
-            <.input field={expense_f[:notes]} type="text" label="Notes(Optional)" />
-            <button
-              type="button"
-              name="category[expenses_drop][]"
-              value={expense_f.index}
-              phx-click={JS.dispatch("change")}
-            >
-              <.icon name="hero-x-mark" class="w-6 h-6 relative top-2" />
-            </button>
-          </.inputs_for>
+          <section class="rounded-lg border border-base-300 p-4">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-base font-semibold">Expenses</h3>
+              <button
+                type="button"
+                class="btn btn-sm btn-outline"
+                name="category[expenses_sort][]"
+                value="new"
+                phx-click={JS.dispatch("change")}
+              >
+                <.icon name="hero-plus" class="w-5 h-5" /> Add Expense
+              </button>
+            </div>
 
-          <button
-            type="button"
-            name="category[expenses_sort][]"
-            value="new"
-            phx-click={JS.dispatch("change")}
-          >
-            Add Expense
-          </button>
-        </section>
-        <footer>
-          <.button phx-disable-with="Saving..." variant="primary">Save Category</.button>
-          <.button navigate={return_path(@return_to, @category)}>Cancel</.button>
-        </footer>
+            <div class="space-y-4">
+              <.inputs_for :let={expense_f} field={@form[:expenses]}>
+                <div class="rounded-lg border border-base-200 p-4">
+                  <div class="grid gap-4 md:grid-cols-4">
+                    <.input field={expense_f[:description]} type="text" label="Description" required />
+                    <.input
+                      field={expense_f[:amount]}
+                      type="number"
+                      label="Amount (cents)"
+                      step="1"
+                      required
+                    />
+                    <.input field={expense_f[:date]} type="datetime-local" label="Date" required />
+                    <.input field={expense_f[:notes]} type="text" label="Notes (optional)" />
+                  </div>
+                  <div class="mt-3 flex justify-end">
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-ghost text-error"
+                      name="category[expenses_drop][]"
+                      value={expense_f.index}
+                      phx-click={JS.dispatch("change")}
+                      aria-="Remove expense"
+                    >
+                      <.icon name="hero-x-mark" class="w-5 h-5" /> Remove
+                    </button>
+                  </div>
+                </div>
+              </.inputs_for>
+            </div>
+          </section>
+
+          <footer class="flex gap-2">
+            <.button phx-disable-with="Saving..." variant="primary">Save Category</.button>
+            <.button navigate={return_path(@return_to, @category)}>Cancel</.button>
+          </footer>
+        </div>
       </.form>
     </Layouts.app>
     """

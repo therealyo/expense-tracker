@@ -23,8 +23,11 @@ defmodule ExpenseTrackerWeb.CategoryLive.Index do
       >
         <:col :let={{_id, category}} label="Name">{category.name}</:col>
         <:col :let={{_id, category}} label="Description">{category.description}</:col>
-        <:col :let={{_id, category}} label="Monthly budget">{category.monthly_budget}</:col>
         <:col :let={{_id, category}} label="Total Spent">{category.total_spent}</:col>
+        <:col :let={{_id, category}} label="Monthly budget">{category.monthly_budget}</:col>
+        <:col :let={{_id, category}} label="Progress">
+          <.progress spent={category.total_spent} budget={category.monthly_budget} />
+        </:col>
         <:action :let={{_id, category}}>
           <div class="sr-only">
             <.link navigate={~p"/categories/#{category}"}>Show</.link>

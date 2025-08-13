@@ -469,4 +469,49 @@ defmodule ExpenseTrackerWeb.CoreComponents do
   def translate_errors(errors, field) when is_list(errors) do
     for {^field, {msg, opts}} <- errors, do: translate_error({msg, opts})
   end
+
+  attr :spent, :integer, required: true
+  attr :budget, :integer, required: true
+  attr :class, :string, default: ""
+
+  def progress(assigns) do
+    assigns =
+      assigns
+      |> assign(:pct, spending_percent(assigns.spent, assigns.budget))
+      |> assign(:label, progress_label(assigns.spent, assigns.budget))
+      |> assign(:color, progress_color(assigns.spent, assigns.budget))
+
+    ~H"""
+    <div class={@class}>
+      <div class="w-full bg-base-200 h-2 rounded">
+        <div class={["h-2 rounded", @color]} style={"width: #{@pct}%"} />
+      </div>
+      <div class="text-xs opacity-70 mt-1">
+        {@label}
+      </div>
+    </div>
+    """
+  end
+
+  defp spending_percent(_spent, budget) when budget in [nil, 0], do: 0
+
+  defp spending_percent(spent, budget) do
+    percent = trunc(spent * 100 / budget)
+    if percent < 0, do: 0, else: percent
+  end
+
+  defp progress_color(spent, budget) do
+    pct = spending_percent(spent, budget)
+
+    cond do
+      pct < 70 -> "bg-success"
+      pct < 100 -> "bg-warning"
+      true -> "bg-error"
+    end
+  end
+
+  defp progress_label(spent, budget) do
+    pct = spending_percent(spent, budget)
+    "#{spent} / #{budget} (#{pct}%)"
+  end
 end
