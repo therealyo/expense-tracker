@@ -33,6 +33,7 @@
 - Categories index page does not update in realtime if new category added
 - Overflowing category budget is not forbidden as well as no max value for amount and budget
 - Missing type specs and overall type hints
+- Part of UI, money conversions and tests are build using AI
 
 ## Testing strategy
 
