@@ -45,7 +45,12 @@ defmodule ExpenseTrackerWeb.CategoryLive.Show do
             </:item>
           </.list>
 
-          <.progress spent={@category.total_spent} budget={@category.monthly_budget} class="mt-4" />
+          <.progress
+            spent={@category.total_spent}
+            budget={@category.monthly_budget}
+            currency={@category.currency}
+            class="mt-4"
+          />
         </section>
 
         <section class="rounded-lg border border-base-300 p-4">
@@ -64,7 +69,9 @@ defmodule ExpenseTrackerWeb.CategoryLive.Show do
                 <div>
                   <div class="font-medium">{expense.description}</div>
                   <div class="text-sm opacity-80">
-                    Amount: {expense.amount} • Date: {format_dt(expense.date)}
+                    Amount: {ExpenseTracker.Currencies.format_cents(expense.amount, expense.currency)} • Date: {format_dt(
+                      expense.date
+                    )}
                     {if expense.notes && expense.notes != "", do: " • Notes: #{expense.notes}"}
                   </div>
                 </div>

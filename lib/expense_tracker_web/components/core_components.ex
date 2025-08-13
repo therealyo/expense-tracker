@@ -472,13 +472,14 @@ defmodule ExpenseTrackerWeb.CoreComponents do
 
   attr :spent, :integer, required: true
   attr :budget, :integer, required: true
+  attr :currency, :string, required: true
   attr :class, :string, default: ""
 
   def progress(assigns) do
     assigns =
       assigns
       |> assign(:pct, spending_percent(assigns.spent, assigns.budget))
-      |> assign(:label, progress_label(assigns.spent, assigns.budget))
+      |> assign(:label, progress_label(assigns.spent, assigns.budget, assigns.currency))
       |> assign(:color, progress_color(assigns.spent, assigns.budget))
 
     ~H"""
@@ -510,8 +511,9 @@ defmodule ExpenseTrackerWeb.CoreComponents do
     end
   end
 
-  defp progress_label(spent, budget) do
+  defp progress_label(spent, budget, currency) do
     pct = spending_percent(spent, budget)
-    "#{spent} / #{budget} (#{pct}%)"
+
+    "#{ExpenseTracker.Currencies.format_cents(spent, currency)} / #{ExpenseTracker.Currencies.format_cents(budget, currency)} (#{pct}%)"
   end
 end

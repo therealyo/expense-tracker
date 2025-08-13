@@ -35,7 +35,11 @@ defmodule ExpenseTrackerWeb.CategoryLive.Index do
           )}
         </:col>
         <:col :let={{_id, category}} label="Progress">
-          <.progress spent={category.total_spent} budget={category.monthly_budget} />
+          <.progress
+            spent={category.total_spent}
+            budget={category.monthly_budget}
+            currency={category.currency}
+          />
         </:col>
         <:action :let={{_id, category}}>
           <div class="sr-only">
