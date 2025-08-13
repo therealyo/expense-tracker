@@ -17,6 +17,11 @@ defmodule ExpenseTrackerWeb.Router do
   scope "/", ExpenseTrackerWeb do
     pipe_through :browser
 
+    live "/categories", CategoryLive.Index, :index
+    live "/categories/new", CategoryLive.Form, :new
+    live "/categories/:id", CategoryLive.Show, :show
+    live "/categories/:id/edit", CategoryLive.Form, :edit
+
     get "/", PageController, :home
   end
 
