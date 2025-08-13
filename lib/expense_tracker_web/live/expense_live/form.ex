@@ -4,7 +4,9 @@ defmodule ExpenseTrackerWeb.ExpenseLive.Form do
   alias ExpenseTracker.Categories
   alias ExpenseTracker.Expenses
   alias ExpenseTracker.Expenses.Expense
+  alias ExpenseTracker.Currencies
 
+  require Logger
   @impl true
   def render(assigns) do
     ~H"""
@@ -20,7 +22,15 @@ defmodule ExpenseTrackerWeb.ExpenseLive.Form do
             <h3 class="text-base font-semibold mb-4">Expense</h3>
             <div class="grid gap-4 md:grid-cols-2">
               <.input field={@form[:description]} type="text" label="Description" required />
-              <.input field={@form[:amount]} type="text" label="Amount (USD)" required />
+              <.input
+                field={@form[:amount]}
+                type="number"
+                min="0.00"
+                step="0.01"
+                inputmode="decimal"
+                label="Amount (USD)"
+                required
+              />
               <.input
                 field={@form[:date]}
                 value={@form[:date].value || now()}
@@ -78,12 +88,19 @@ defmodule ExpenseTrackerWeb.ExpenseLive.Form do
   end
 
   @impl true
-  def handle_event("validate", %{"expense" => expense_params}, socket) do
+  def handle_event(
+        "validate",
+        %{"expense" => expense_params},
+        socket
+      ) do
+    expense_params = Currencies.normalize_money(expense_params, "amount")
     changeset = Expenses.change_expense(socket.assigns.expense, expense_params)
     {:noreply, assign(socket, form: to_form(changeset, action: :validate))}
   end
 
+  @impl true
   def handle_event("save", %{"expense" => expense_params}, socket) do
+    expense_params = Currencies.normalize_money(expense_params, "amount")
     save_expense(socket, socket.assigns.live_action, expense_params)
   end
 

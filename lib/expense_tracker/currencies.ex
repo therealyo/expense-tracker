@@ -68,4 +68,33 @@ defmodule ExpenseTracker.Currencies do
     do: cur in Enum.map(@available_currencies, &to_string/1)
 
   def valid_currency?(_), do: false
+
+  def normalize_money(%{} = attrs, key) when is_atom(key) do
+    case Map.fetch(attrs, Atom.to_string(key)) do
+      {:ok, v} when is_binary(v) ->
+        case parse_dollars_to_cents(v) do
+          {:ok, cents} -> Map.put(attrs, key, cents)
+          {:error, _} -> attrs
+        end
+
+      _ ->
+        attrs
+    end
+  end
+
+  def normalize_money(%{} = attrs, key) when is_binary(key) do
+    case Map.fetch(attrs, key) do
+      {:ok, v} when is_binary(v) ->
+        case parse_dollars_to_cents(v) do
+          {:ok, cents} ->
+            Map.put(attrs, key, cents)
+
+          {:error, _} ->
+            attrs
+        end
+
+      _ ->
+        attrs
+    end
+  end
 end

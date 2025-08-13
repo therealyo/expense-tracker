@@ -1,4 +1,6 @@
 defmodule ExpenseTrackerWeb.CategoryLive.Form do
+  require Logger
+  alias ExpenseTracker.Currencies
   use ExpenseTrackerWeb, :live_view
 
   alias ExpenseTracker.Categories
@@ -21,7 +23,10 @@ defmodule ExpenseTrackerWeb.CategoryLive.Form do
               <.input field={@form[:name]} type="text" label="Name" required />
               <.input
                 field={@form[:monthly_budget]}
-                type="text"
+                type="number"
+                min="0.00"
+                step="0.01"
+                inputmode="decimal"
                 label="Monthly Budget (USD)"
                 required
               />
@@ -125,11 +130,13 @@ defmodule ExpenseTrackerWeb.CategoryLive.Form do
 
   @impl true
   def handle_event("validate", %{"category" => category_params}, socket) do
+    category_params = Currencies.normalize_money(category_params, "monthly_budget")
     changeset = Categories.change_category(socket.assigns.category, category_params)
     {:noreply, assign(socket, form: to_form(changeset, action: :validate))}
   end
 
   def handle_event("save", %{"category" => category_params}, socket) do
+    category_params = Currencies.normalize_money(category_params, "monthly_budget")
     save_category(socket, socket.assigns.live_action, category_params)
   end
 

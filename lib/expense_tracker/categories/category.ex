@@ -21,8 +21,6 @@ defmodule ExpenseTracker.Categories.Category do
 
   @doc false
   def changeset(category, attrs) do
-    attrs = normalize_money(attrs, :monthly_budget)
-
     category
     |> cast(attrs, [:name, :description, :currency, :monthly_budget])
     |> cast_assoc(
@@ -33,19 +31,6 @@ defmodule ExpenseTracker.Categories.Category do
     |> validate_inclusion(:currency, Currencies.available_currencies())
     |> validate_number(:monthly_budget, greater_than_or_equal_to: 0)
     |> validate_required([:name, :description, :currency, :monthly_budget])
-  end
-
-  defp normalize_money(%{} = attrs, key) do
-    case Map.fetch(attrs, key) do
-      {:ok, v} when is_binary(v) ->
-        case Currencies.parse_dollars_to_cents(v) do
-          {:ok, cents} -> Map.put(attrs, key, cents)
-          {:error, _} -> attrs
-        end
-
-      _ ->
-        attrs
-    end
   end
 
   def with_total_spent(%__MODULE__{} = category) do
