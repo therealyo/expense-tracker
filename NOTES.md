@@ -32,6 +32,7 @@
 - Total Spent calculates at runtime - can be optimized
 - Categories index page does not update in realtime if new category added
 - Overflowing category budget is not forbidden as well as no max value for amount and budget
+- Missing type specs and overall type hints
 
 ## Testing strategy
 
