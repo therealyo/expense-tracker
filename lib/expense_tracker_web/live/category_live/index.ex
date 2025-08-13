@@ -1,4 +1,6 @@
 defmodule ExpenseTrackerWeb.CategoryLive.Index do
+  alias ExpenseTracker.Expenses.Expense
+  alias ExpenseTracker.Expenses
   use ExpenseTrackerWeb, :live_view
 
   alias ExpenseTracker.Categories
@@ -66,6 +68,10 @@ defmodule ExpenseTrackerWeb.CategoryLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
+    if connected?(socket) do
+      Expenses.subscribe_to_changes()
+    end
+
     {:ok,
      socket
      |> assign(:page_title, "Listing Categories")
@@ -78,5 +84,17 @@ defmodule ExpenseTrackerWeb.CategoryLive.Index do
     {:ok, _} = Categories.delete_category(category)
 
     {:noreply, stream_delete(socket, :categories, category)}
+  end
+
+  @impl true
+  def handle_info({:expense_created, %Expense{} = expense}, socket) do
+    updated_category = Categories.get_category!(expense.category_id)
+    {:noreply, stream_insert(socket, :categories, updated_category)}
+  end
+
+  @impl true
+  def handle_info({:expense_updated, %Expense{} = expense}, socket) do
+    updated_category = Categories.get_category!(expense.category_id)
+    {:noreply, stream_insert(socket, :categories, updated_category)}
   end
 end

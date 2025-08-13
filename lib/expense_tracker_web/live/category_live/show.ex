@@ -1,4 +1,5 @@
 defmodule ExpenseTrackerWeb.CategoryLive.Show do
+  alias ExpenseTracker.Expenses
   use ExpenseTrackerWeb, :live_view
 
   alias ExpenseTracker.Categories
@@ -69,11 +70,25 @@ defmodule ExpenseTrackerWeb.CategoryLive.Show do
   def mount(%{"id" => id}, _session, socket) do
     category = Categories.get_category!(id)
 
+    if connected?(socket) do
+      Expenses.subscribe_to_changes()
+    end
+
     {:ok,
      socket
      |> assign(:page_title, "Show Category")
      |> assign(:category, category)
      |> stream(:expenses, category.expenses)}
+  end
+
+  @impl true
+  def handle_info({:expense_created, expense}, socket) do
+    {:noreply, stream_insert(socket, :expenses, expense)}
+  end
+
+  @impl true
+  def handle_info({:expense_updated, expense}, socket) do
+    {:noreply, stream_insert(socket, :expenses, expense)}
   end
 
   defp spending_percent(_spent, budget) when budget in [nil, 0], do: 0

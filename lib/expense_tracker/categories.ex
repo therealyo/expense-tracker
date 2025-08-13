@@ -4,6 +4,7 @@ defmodule ExpenseTracker.Categories do
   """
 
   import Ecto.Query, warn: false
+  alias ExpenseTracker.Categories
   alias ExpenseTracker.Repo
 
   alias ExpenseTracker.Categories.Category
@@ -58,9 +59,12 @@ defmodule ExpenseTracker.Categories do
 
   """
   def create_category(attrs) do
-    %Category{}
-    |> Category.changeset(attrs)
-    |> Repo.insert()
+    with {:ok, category = %Category{}} <-
+           %Category{}
+           |> Category.changeset(attrs)
+           |> Repo.insert() do
+      {:ok, category}
+    end
   end
 
   @doc """
@@ -76,9 +80,12 @@ defmodule ExpenseTracker.Categories do
 
   """
   def update_category(%Category{} = category, attrs) do
-    category
-    |> Category.changeset(attrs)
-    |> Repo.update()
+    with {:ok, category = %Category{}} <-
+           category
+           |> Category.changeset(attrs)
+           |> Repo.update() do
+      {:ok, category}
+    end
   end
 
   @doc """
@@ -113,4 +120,12 @@ defmodule ExpenseTracker.Categories do
   def categories_select_options do
     Repo.all(from c in Category, order_by: [asc: c.name], select: {c.name, c.id})
   end
+
+  # def subscribe_to_changes() do
+  #   Phoenix.PubSub.subscribe(ExpenseTracker.PubSub, "categories")
+  # end
+  #
+  # def broadcast(message) do
+  #   Phoenix.PubSub.broadcast(ExpenseTracker.PubSub, "categories", message)
+  # end
 end
