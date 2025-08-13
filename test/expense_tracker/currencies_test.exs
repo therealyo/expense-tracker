@@ -15,4 +15,11 @@ defmodule ExpenseTracker.CurrenciesTest do
     assert {:ok, 9900} = Currencies.parse_dollars_to_cents("99.")
     assert {:ok, 0} = Currencies.parse_dollars_to_cents("")
   end
+
+  test "normalize_money/2" do
+    assert %{"amount" => 123} = Currencies.normalize_money(%{"amount" => "1.23"}, "amount")
+    assert %{"amount" => 123} = Currencies.normalize_money(%{"amount" => "1.23"}, :amount)
+    assert %{amount: 123} = Currencies.normalize_money(%{amount: "1.23"}, :amount)
+    assert %{amount: 123} = Currencies.normalize_money(%{amount: "1.23"}, "amount")
+  end
 end

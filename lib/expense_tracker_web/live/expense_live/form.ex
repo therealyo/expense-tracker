@@ -93,14 +93,12 @@ defmodule ExpenseTrackerWeb.ExpenseLive.Form do
         %{"expense" => expense_params},
         socket
       ) do
-    expense_params = Currencies.normalize_money(expense_params, "amount")
     changeset = Expenses.change_expense(socket.assigns.expense, expense_params)
     {:noreply, assign(socket, form: to_form(changeset, action: :validate))}
   end
 
   @impl true
   def handle_event("save", %{"expense" => expense_params}, socket) do
-    expense_params = Currencies.normalize_money(expense_params, "amount")
     save_expense(socket, socket.assigns.live_action, expense_params)
   end
 

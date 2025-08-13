@@ -69,31 +69,24 @@ defmodule ExpenseTracker.Currencies do
 
   def valid_currency?(_), do: false
 
-  def normalize_money(%{} = attrs, key) when is_atom(key) do
-    case Map.fetch(attrs, Atom.to_string(key)) do
-      {:ok, v} when is_binary(v) ->
-        case parse_dollars_to_cents(v) do
-          {:ok, cents} -> Map.put(attrs, key, cents)
+  def normalize_money(%{} = attrs, key) when is_atom(key) or is_binary(key) do
+    key_str = if is_atom(key), do: Atom.to_string(key), else: key
+    key_atom = if is_binary(key), do: String.to_atom(key), else: key
+
+    cond do
+      Map.has_key?(attrs, key_str) and is_binary(Map.get(attrs, key_str)) ->
+        case parse_dollars_to_cents(Map.get(attrs, key_str)) do
+          {:ok, cents} -> Map.put(attrs, key_str, cents)
           {:error, _} -> attrs
         end
 
-      _ ->
-        attrs
-    end
-  end
-
-  def normalize_money(%{} = attrs, key) when is_binary(key) do
-    case Map.fetch(attrs, key) do
-      {:ok, v} when is_binary(v) ->
-        case parse_dollars_to_cents(v) do
-          {:ok, cents} ->
-            Map.put(attrs, key, cents)
-
-          {:error, _} ->
-            attrs
+      Map.has_key?(attrs, key_atom) and is_binary(Map.get(attrs, key_atom)) ->
+        case parse_dollars_to_cents(Map.get(attrs, key_atom)) do
+          {:ok, cents} -> Map.put(attrs, key_atom, cents)
+          {:error, _} -> attrs
         end
 
-      _ ->
+      true ->
         attrs
     end
   end

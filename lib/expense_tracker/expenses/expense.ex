@@ -20,6 +20,8 @@ defmodule ExpenseTracker.Expenses.Expense do
 
   @doc false
   def changeset(expense, attrs) do
+    attrs = Currencies.normalize_money(attrs, :amount)
+
     expense
     |> cast(attrs, [:description, :currency, :amount, :date, :notes, :category_id])
     |> validate_number(:amount, greater_than_or_equal_to: 0)

@@ -130,13 +130,11 @@ defmodule ExpenseTrackerWeb.CategoryLive.Form do
 
   @impl true
   def handle_event("validate", %{"category" => category_params}, socket) do
-    category_params = Currencies.normalize_money(category_params, "monthly_budget")
     changeset = Categories.change_category(socket.assigns.category, category_params)
     {:noreply, assign(socket, form: to_form(changeset, action: :validate))}
   end
 
   def handle_event("save", %{"category" => category_params}, socket) do
-    category_params = Currencies.normalize_money(category_params, "monthly_budget")
     save_category(socket, socket.assigns.live_action, category_params)
   end
 

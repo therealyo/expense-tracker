@@ -21,6 +21,8 @@ defmodule ExpenseTracker.Categories.Category do
 
   @doc false
   def changeset(category, attrs) do
+    attrs = Currencies.normalize_money(attrs, :monthly_budget)
+
     category
     |> cast(attrs, [:name, :description, :currency, :monthly_budget])
     |> cast_assoc(

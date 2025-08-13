@@ -4,7 +4,6 @@ defmodule ExpenseTracker.Categories do
   """
 
   import Ecto.Query, warn: false
-  alias ExpenseTracker.Categories
   alias ExpenseTracker.Repo
 
   alias ExpenseTracker.Categories.Category
