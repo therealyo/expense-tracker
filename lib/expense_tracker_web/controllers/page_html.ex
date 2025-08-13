@@ -7,4 +7,7 @@ defmodule ExpenseTrackerWeb.PageHTML do
   use ExpenseTrackerWeb, :html
 
   embed_templates "page_html/*"
+
+  defp format_dt(nil), do: ""
+  defp format_dt(dt), do: Calendar.strftime(dt, "%Y-%m-%d %H:%M")
 end
