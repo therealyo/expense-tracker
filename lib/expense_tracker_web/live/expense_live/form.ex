@@ -4,7 +4,6 @@ defmodule ExpenseTrackerWeb.ExpenseLive.Form do
   alias ExpenseTracker.Categories
   alias ExpenseTracker.Expenses
   alias ExpenseTracker.Expenses.Expense
-  alias ExpenseTracker.Currencies
 
   require Logger
   @impl true

@@ -1,6 +1,5 @@
 defmodule ExpenseTrackerWeb.CategoryLive.Form do
   require Logger
-  alias ExpenseTracker.Currencies
   use ExpenseTrackerWeb, :live_view
 
   alias ExpenseTracker.Categories

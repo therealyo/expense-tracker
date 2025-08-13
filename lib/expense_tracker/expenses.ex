@@ -1,9 +1,13 @@
 defmodule ExpenseTracker.Expenses do
+  import Ecto.Query, warn: false
+
   alias ExpenseTracker.Expenses.Expense
   alias ExpenseTracker.Repo
 
   def list_expenses do
-    Expense
+    query = from e in Expense, order_by: [desc: e.date]
+
+    query
     |> Repo.all()
     |> Repo.preload(:category)
   end

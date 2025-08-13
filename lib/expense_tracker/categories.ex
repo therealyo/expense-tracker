@@ -18,7 +18,9 @@ defmodule ExpenseTracker.Categories do
 
   """
   def list_categories do
-    Category
+    query = from c in Category, order_by: [desc: c.inserted_at]
+
+    query
     |> Repo.all()
     |> Repo.preload(:expenses)
     |> Enum.map(fn c -> Category.with_total_spent(c) end)
