@@ -484,7 +484,7 @@ defmodule ExpenseTrackerWeb.CoreComponents do
     ~H"""
     <div class={@class}>
       <div class="w-full bg-base-200 h-2 rounded">
-        <div class={["h-2 rounded", @color]} style={"width: #{@pct}%"} />
+        <div class={["h-2 rounded", @color]} style={"width: #{if @pct > 100, do: 100, else: @pct}%"} />
       </div>
       <div class="text-xs opacity-70 mt-1">
         {@label}
