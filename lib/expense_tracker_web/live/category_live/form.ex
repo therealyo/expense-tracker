@@ -26,6 +26,10 @@ defmodule ExpenseTrackerWeb.CategoryLive.Form do
                 min="0.00"
                 step="0.01"
                 inputmode="decimal"
+                value={
+                  ExpenseTracker.Currencies.format_cents(@form[:monthly_budget].value, "USD")
+                  |> String.trim_leading("$")
+                }
                 label="Monthly Budget (USD)"
                 required
               />
@@ -58,8 +62,14 @@ defmodule ExpenseTrackerWeb.CategoryLive.Form do
                     <.input
                       field={expense_f[:amount]}
                       type="number"
-                      label="Amount (cents)"
-                      step="1"
+                      min="0.00"
+                      step="0.01"
+                      inputmode="decimal"
+                      value={
+                        ExpenseTracker.Currencies.format_cents(expense_f[:amount].value, "USD")
+                        |> String.trim_leading("$")
+                      }
+                      label="Amount (USD)"
                       required
                     />
                     <.input
